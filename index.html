@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Chá com Maria</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,600;1,400;1,500&display=swap" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="hero-wrapper">
+    <div class="hero-frame">
+      <img class="hero-flyer" src="images/imagem principal.jpeg" alt="Chá com Maria" />
+    </div>
+    <span class="badge">
+      <span class="badge-dot"></span>
+      <span class="badge-title">Inscrições abertas</span>
+      <span class="badge-date">até 26/07/2026 às 15h</span>
+    </span>
+
+    <section class="event-info">
+      <h2>Chá com Maria</h2>
+
+      <div class="info-cards">
+        <div class="info-card">
+          <span class="info-icon"><img src="images/calendario.png" alt="Calendário" /></span>
+          <div>
+            <span class="info-label">Data</span>
+            <span class="info-value">26/07/2026 às 15h</span>
+          </div>
+        </div>
+        <div class="info-card">
+          <span class="info-icon"><img src="images/localização.png" alt="Localização" /></span>
+          <div>
+            <span class="info-label">Local</span>
+            <a class="info-value info-link" href="https://maps.app.goo.gl/g7nhTXYF2W61LoyY9" target="_blank" rel="noopener">R. Paraná, 704 - Jardim Brussioli, Douradina-PR</a>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="event-more-link" id="abrirSobreEvento"><img src="images/informacoes.png" class="event-more-icon" alt="" />Mais informações sobre o evento</button>
+    </section>
+
+    <div class="modal-overlay" id="modalSobreEvento">
+      <div class="modal-card">
+        <button type="button" class="modal-close" id="fecharSobreEvento" aria-label="Fechar">✕</button>
+        <p class="modal-eyebrow">Sobre o evento</p>
+        <h3 class="modal-title">Chá com Maria</h3>
+        <p class="modal-subtitle">[SUBTÍTULO DO EVENTO AQUI]</p>
+
+        <p class="modal-line">Condução: [nome]</p>
+        <p class="modal-line"><img class="modal-icon" src="images/calendario.png" alt="" />Dia: [data]</p>
+        <p class="modal-line">🕐 Horário: [horário]</p>
+        <p class="modal-line"><img class="modal-icon" src="images/localização.png" alt="" />Local: [endereço]</p>
+        <p class="modal-line">Valor: R$ 63,00</p>
+
+        <p class="modal-note">[observação extra, ex: com chá e quitutes inclusos]</p>
+        <p class="modal-line">[descrição do evento aqui]</p>
+      </div>
+    </div>
+
+    <section class="registration">
+      <h3>Faça sua inscrição</h3>
+      <p class="registration-hint">Leva menos de 2 minutos.</p>
+
+      <form id="registrationForm">
+        <div class="form-step">
+          <span class="step-number">1</span>
+          <span class="step-title">Seus dados</span>
+        </div>
+
+        <div class="form-row">
+          <label>
+            Nome
+            <input type="text" name="nome" placeholder="Ex.: Maria Silva" required />
+          </label>
+          <label>
+            E-mail
+            <input type="email" name="email" placeholder="seuemail@email.com" required />
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label>
+            WhatsApp / Telefone
+            <input type="tel" name="telefone" placeholder="(00) 00000-0000" required />
+          </label>
+          <label>
+            Cidade
+            <input type="text" name="cidade" placeholder="Sua cidade" required />
+          </label>
+        </div>
+
+        <div class="form-step">
+          <span class="step-number">2</span>
+          <span class="step-title">Ingressos e serviços</span>
+        </div>
+
+        <div class="ticket-row">
+          <div class="ticket-info">
+            <span class="ticket-name">Chá com Maria</span>
+            <span class="ticket-price">R$ 63,00 / pessoa</span>
+          </div>
+        </div>
+
+        <p class="ticket-total">Total: <strong id="ticketTotal">R$ 63,00</strong></p>
+
+        <p id="formMessage" class="form-message"></p>
+
+        <button type="submit" class="btn-primary">Próximo →</button>
+      </form>
+    </section>
+  </header>
+
+  <div class="modal-overlay" id="modalEsgotado">
+    <div class="modal-card">
+      <p class="modal-eyebrow">Vagas esgotadas 🌸</p>
+      <p class="modal-line">As inscrições para o Chá com Maria já atingiram o limite máximo de pessoas. Agradecemos imensamente o carinho e o interesse de todos — esperamos você no próximo encontro!</p>
+    </div>
+  </div>
+
+  <main></main>
+
+  <footer>
+    <p>Desenvolvido por <a href="https://wa.me/5544998302783" target="_blank" rel="noopener" class="footer-link">JVP Solutions</a></p>
+  </footer>
+
+  <script>
+    const modal = document.getElementById('modalSobreEvento');
+    document.getElementById('abrirSobreEvento').addEventListener('click', () => modal.classList.add('open'));
+    document.getElementById('fecharSobreEvento').addEventListener('click', () => modal.classList.remove('open'));
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); });
+
+    const PRECO_UNITARIO = 63;
+    const form = document.getElementById('registrationForm');
+    const message = document.getElementById('formMessage');
+    const totalEl = document.getElementById('ticketTotal');
+    const modalEsgotado = document.getElementById('modalEsgotado');
+    const submitBtn = form.querySelector('.btn-primary');
+
+    function atualizarTotal() {
+      totalEl.textContent = PRECO_UNITARIO.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    function mostrarEsgotado() {
+      modalEsgotado.classList.add('open');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Vagas esgotadas';
+    }
+
+    async function checarLimite() {
+      try {
+        const resp = await fetch('/api/inscricoes/limite');
+        const data = await resp.json();
+        if (data.esgotado) mostrarEsgotado();
+      } catch (e) {
+        console.warn('Erro ao checar limite de vagas:', e);
+      }
+    }
+    checarLimite();
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form).entries());
+      const quantidade = 1;
+      const valorTotal = quantidade * PRECO_UNITARIO;
+      data.quantidade = quantidade;
+      data.valor_total = valorTotal;
+
+      message.textContent = 'Enviando...';
+      message.className = 'form-message';
+
+      try {
+        const resp = await fetch('/api/inscricao', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        if (resp.status === 409) {
+          message.textContent = '';
+          mostrarEsgotado();
+          return;
+        }
+        if (!resp.ok) throw new Error((await resp.json()).error || 'Falha ao enviar');
+        const result = await resp.json();
+        message.textContent = 'Inscrição salva! Abrindo pagamento...';
+        message.className = 'form-message success';
+        window.open(`pagamento.html?id=${result.id}&valor=${valorTotal}`, '_blank');
+        form.reset();
+        atualizarTotal();
+      } catch (err) {
+        message.textContent = 'Não foi possível enviar sua inscrição. Tente novamente.';
+        message.className = 'form-message error';
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Painel — Chá com Maria</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+<style>
+  :root {
+    --bg: #e3e5eb;
+    --surface: #ffffff;
+    --border: #d5d8e0;
+    --text: #14161f;
+    --text-muted: #6b7080;
+    --accent: #6d3fbf;
+    --accent-soft: #f1ebfb;
+    --green: #17a34a;
+    --green-soft: #e8f8ee;
+    --amber: #b8790a;
+    --amber-soft: #fdf3df;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 16px 12px 40px;
+  }
+  .page {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  .page-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  h1 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-top: 4px;
+  }
+  .live-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--green-soft);
+    color: var(--green);
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 999px;
+  }
+  .live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .summary {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .summary-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 16px;
+  }
+  .summary-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .summary-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+  }
+  .summary-icon.purple { background: var(--accent-soft); }
+  .summary-icon.green { background: var(--green-soft); }
+  .summary-icon.amber { background: var(--amber-soft); }
+  .summary-value {
+    display: block;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .table-wrapper {
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 640px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+  thead th {
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+  }
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s ease;
+  }
+  tbody tr:last-child {
+    border-bottom: none;
+  }
+  tbody tr:hover {
+    background: #fafafd;
+  }
+  .name-cell {
+    font-weight: 600;
+  }
+  .muted {
+    color: var(--text-muted);
+  }
+
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .status::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+  .status.pendente {
+    background: var(--amber-soft);
+    color: var(--amber);
+  }
+  .status.pendente::before { background: var(--amber); }
+  .status.pago {
+    background: var(--green-soft);
+    color: var(--green);
+  }
+  .status.pago::before { background: var(--green); }
+
+  .status-select {
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+  }
+  .status-select:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+  }
+  .print-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .print-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .empty {
+    text-align: center;
+    padding: 48px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  #printArea {
+    display: none;
+  }
+
+  @media print {
+    body > *:not(#printArea) {
+      display: none !important;
+    }
+    #printArea {
+      display: block !important;
+    }
+    #printArea table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    #printArea th, #printArea td {
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1px solid #ccc;
+      font-size: 12px;
+    }
+  }
+
+  @media (min-width: 640px) {
+    body {
+      padding: 32px 20px 64px;
+    }
+    .page-header {
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+    h1 {
+      font-size: 1.5rem;
+    }
+    .header-actions {
+      width: auto;
+    }
+    .summary {
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .summary-card {
+      padding: 18px 20px;
+    }
+    th, td {
+      padding: 14px 18px;
+      font-size: 0.88rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <h1>Chá com Maria</h1>
+        <p class="subtitle">Painel de inscrições e pagamentos</p>
+      </div>
+      <div class="header-actions">
+        <button class="print-btn" id="printBtn">🖨️ Imprimir pagos</button>
+        <span class="live-pill"><span class="live-dot"></span>Atualiza a cada 10s</span>
+      </div>
+    </div>
+
+    <div id="printArea">
+      <h2>Chá com Maria — Inscritos pagos</h2>
+      <table>
+        <thead>
+          <tr><th>Nome</th><th>Número</th><th>Cidade</th></tr>
+        </thead>
+        <tbody id="printTableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="summary">
+      <div class="summary-card">
+        <span class="summary-label"><span class="summary-icon purple">👥</span>Inscritos</span>
+        <span class="summary-value" id="totalInscritos">0</span>
+      </div>
+      <div class="summary-card">
+        <span class="summary-label"><span class="summary-icon green">✓</span>Pagos</span>
+        <span class="summary-value" id="totalPagos">0</span>
+      </div>
+      <div class="summary-card">
+        <span class="summary-label"><span class="summary-icon amber">R$</span>Arrecadado</span>
+        <span class="summary-value" id="totalArrecadado">R$ 0,00</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Número</th>
+              <th>Cidade</th>
+              <th>Qtd.</th>
+              <th>Valor</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr><td colspan="7" class="empty">Carregando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const money = (v) => parseFloat(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+    async function carregar() {
+      try {
+        const resp = await fetch('/api/inscricoes');
+        const data = await resp.json();
+        const rows = data.inscricoes || [];
+
+        document.getElementById('totalInscritos').textContent = rows.length;
+        document.getElementById('totalPagos').textContent = rows.filter(r => r.status_pagamento === 'pago').length;
+        document.getElementById('totalArrecadado').textContent = money(
+          rows.filter(r => r.status_pagamento === 'pago').reduce((sum, r) => sum + parseFloat(r.valor_total), 0)
+        );
+
+        const tbody = document.getElementById('tableBody');
+        if (!rows.length) {
+          tbody.innerHTML = '<tr><td colspan="7" class="empty">Nenhuma inscrição ainda.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = rows.map(r => `
+          <tr>
+            <td class="name-cell">${r.nome}</td>
+            <td class="muted">${r.telefone}</td>
+            <td class="muted">${r.cidade}</td>
+            <td class="muted">${r.quantidade}</td>
+            <td>${money(r.valor_total)}</td>
+            <td><span class="status ${r.status_pagamento}">${r.status_pagamento}</span></td>
+            <td>
+              <select class="status-select" data-id="${r.id}">
+                <option value="pendente" ${r.status_pagamento === 'pendente' ? 'selected' : ''}>Pendente</option>
+                <option value="pago" ${r.status_pagamento === 'pago' ? 'selected' : ''}>Pago</option>
+              </select>
+            </td>
+          </tr>
+        `).join('');
+
+        tbody.querySelectorAll('.status-select').forEach(select => {
+          select.addEventListener('change', async () => {
+            select.disabled = true;
+            try {
+              await fetch(`/api/inscricoes/${select.dataset.id}/pagamento`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: select.value })
+              });
+              carregar();
+            } catch (e) {
+              select.disabled = false;
+            }
+          });
+        });
+
+        window.ultimaListaInscricoes = rows;
+      } catch (e) {
+        console.error('Erro ao carregar inscrições', e);
+      }
+    }
+
+    document.getElementById('printBtn').addEventListener('click', () => {
+      const rows = (window.ultimaListaInscricoes || []).filter(r => r.status_pagamento === 'pago');
+      const printBody = document.getElementById('printTableBody');
+      if (!rows.length) {
+        printBody.innerHTML = '<tr><td colspan="3">Nenhum inscrito pago ainda.</td></tr>';
+      } else {
+        printBody.innerHTML = rows.map(r => `
+          <tr><td>${r.nome}</td><td>${r.telefone}</td><td>${r.cidade}</td></tr>
+        `).join('');
+      }
+      window.print();
+    });
+
+    carregar();
+    setInterval(carregar, 10000);
+  </script>
+
+</body>
+</html>

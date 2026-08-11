@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Chá com Maria</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,600;1,400;1,500&display=swap" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="hero-wrapper">
+    <div class="hero-frame"></div>
+    <span class="badge">Inscrições abertas</span>
+  </header>
+
+  <main>
+    <section class="event-info">
+      <h2>Chá com Maria</h2>
+
+      <div class="info-cards">
+        <div class="info-card">
+          <span class="info-icon">📅</span>
+          <div>
+            <span class="info-label">Data</span>
+            <span class="info-value">[data e horário]</span>
+          </div>
+        </div>
+        <div class="info-card">
+          <span class="info-icon">📍</span>
+          <div>
+            <span class="info-label">Local</span>
+            <span class="info-value">[endereço]</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="event-description">
+        [descrição do evento aqui]
+      </p>
+    </section>
+
+    <section class="registration">
+      <h3>Faça sua inscrição</h3>
+      <p class="registration-hint">Leva menos de 2 minutos.</p>
+
+      <form id="registrationForm">
+        <div class="form-step">
+          <span class="step-number">1</span>
+          <span class="step-title">Seus dados</span>
+        </div>
+
+        <div class="form-row">
+          <label>
+            Nome
+            <input type="text" name="nome" placeholder="Ex.: Maria Silva" required />
+          </label>
+          <label>
+            E-mail
+            <input type="email" name="email" placeholder="seuemail@email.com" required />
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label>
+            WhatsApp / Telefone
+            <input type="tel" name="telefone" placeholder="(00) 00000-0000" required />
+          </label>
+          <label>
+            Cidade
+            <input type="text" name="cidade" placeholder="Sua cidade" required />
+          </label>
+        </div>
+
+        <p id="formMessage" class="form-message"></p>
+
+        <button type="submit" class="btn-primary">Confirmar inscrição →</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>Chá com Maria</p>
+  </footer>
+
+  <script>
+    const form = document.getElementById('registrationForm');
+    const message = document.getElementById('formMessage');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form).entries());
+      message.textContent = 'Enviando...';
+      message.className = 'form-message';
+
+      try {
+        const resp = await fetch('/api/inscricao', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        if (!resp.ok) throw new Error((await resp.json()).error || 'Falha ao enviar');
+        message.textContent = 'Inscrição confirmada! Nos vemos lá. 🌸';
+        message.className = 'form-message success';
+        form.reset();
+      } catch (err) {
+        message.textContent = 'Não foi possível enviar sua inscrição. Tente novamente.';
+        message.className = 'form-message error';
+      }
+    });
+  </script>
+
+</body>
+</html>

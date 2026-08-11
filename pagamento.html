@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pagamento — Chá com Maria</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,600;1,400;1,500&display=swap" />
+<link rel="stylesheet" href="style.css" />
+<style>
+  .pay-wrapper {
+    max-width: 480px;
+    margin: 20px auto;
+    padding: 0 16px;
+  }
+  .pay-card {
+    background: #fffefc;
+    border-radius: 16px;
+    padding: 24px 18px;
+    box-shadow: 0 12px 32px rgba(74, 31, 43, 0.12);
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .pay-card h1 {
+    font-family: 'Cormorant', serif;
+    font-style: italic;
+    font-size: 1.4rem;
+    color: #4a1f2b;
+    margin-bottom: 8px;
+  }
+  .pay-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #4a1f2b;
+    margin-bottom: 18px;
+  }
+  .pay-qrcode {
+    width: 100%;
+    max-width: 220px;
+    aspect-ratio: 1 / 1;
+    margin: 0 auto 18px;
+    background: #fffefc;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    color: #a17e5c;
+    font-size: 0.8rem;
+    text-align: center;
+    padding: 12px;
+  }
+
+  .pay-qrcode img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .pay-key-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #a17e5c;
+    margin-bottom: 6px;
+  }
+  .pay-key {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .pay-key input {
+    width: 100%;
+    font-family: inherit;
+    font-size: 0.9rem;
+    padding: 12px;
+    border: 1px solid #e3d3c7;
+    border-radius: 8px;
+    background: #fdf8f5;
+    color: #3a2e2c;
+  }
+  .pay-key button {
+    width: 100%;
+    font-family: inherit;
+    font-size: 0.9rem;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #4a1f2b;
+    color: #f5e9dc;
+    cursor: pointer;
+  }
+  .pay-key button:hover {
+    background: #7a3b4a;
+  }
+  .pay-hint {
+    font-size: 0.82rem;
+    color: #6b5854;
+  }
+
+  @media (min-width: 640px) {
+    .pay-wrapper {
+      margin: 40px auto;
+    }
+    .pay-card {
+      padding: 28px 20px;
+    }
+    .pay-card h1 {
+      font-size: 1.6rem;
+    }
+    .pay-value {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+    .pay-qrcode {
+      margin-bottom: 20px;
+    }
+    .pay-key {
+      flex-direction: row;
+      margin-bottom: 20px;
+    }
+    .pay-key input {
+      flex: 1;
+    }
+    .pay-key button {
+      width: auto;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <div class="pay-wrapper">
+    <div class="pay-card">
+      <h1>Chá com Maria</h1>
+      <p class="pay-value" id="valorPagamento">R$ 63,00</p>
+
+      <div class="pay-qrcode"><img src="images/pix.jpeg" alt="QR code Pix" /></div>
+
+      <p class="pay-key-label">Pix Copia e Cola</p>
+      <div class="pay-key">
+        <input type="text" id="chavePix" value="00020126850014br.gov.bcb.pix01367e12eb01-be2d-4c73-924d-f5f1fab721bd0223Inscricao Cha com Maria520400005303986540563.005802BR5913MEIRI MIRANDA6009Sao Paulo62230519daqr55030327959557563045EDB" readonly />
+        <button id="copiarChave">Copiar</button>
+      </div>
+
+      <p class="pay-hint">Após pagar, sua inscrição para o Chá com Maria estará confirmada. Guarde o comprovante.</p>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const valor = parseFloat(params.get('valor')) || 63;
+    document.getElementById('valorPagamento').textContent = valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+    document.getElementById('copiarChave').addEventListener('click', () => {
+      const input = document.getElementById('chavePix');
+      input.select();
+      navigator.clipboard.writeText(input.value);
+    });
+  </script>
+
+</body>
+</html>

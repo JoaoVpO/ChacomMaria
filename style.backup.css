@@ -1,0 +1,300 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Cormorant', serif;
+  background: #fdf8f5;
+  color: #3a2e2c;
+  line-height: 1.6;
+}
+
+/* ---------- Hero / Banner (arte pronta) ---------- */
+
+.hero-wrapper {
+  position: relative;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 20px 16px 0;
+  text-align: center;
+}
+
+.hero-frame {
+  position: relative;
+  border-radius: 24px 24px 0 0;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  background: #4a1f2b;
+  box-shadow: 0 12px 32px rgba(74, 31, 43, 0.2);
+}
+
+.hero-flyer {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.badge {
+  position: relative;
+  z-index: 10;
+  display: inline-block;
+  margin-top: -22px;
+  background: #fdf8f5;
+  color: #4a1f2b;
+  padding: 10px 22px;
+  border-radius: 14px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  letter-spacing: 0.3px;
+  box-shadow: 0 8px 20px rgba(74, 31, 43, 0.18);
+}
+
+/* ---------- Event Info ---------- */
+
+main {
+  max-width: 640px;
+  margin: 4px auto 0;
+  padding: 0 16px 48px;
+}
+
+.event-info {
+  background: #fffefc;
+  border-radius: 16px;
+  padding: 28px 20px;
+  box-shadow: 0 12px 32px rgba(74, 31, 43, 0.12);
+  text-align: center;
+}
+
+.event-info h2 {
+  font-style: italic;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #4a1f2b;
+}
+
+.info-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.info-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fdf3e9;
+  border-radius: 10px;
+  padding: 14px 16px;
+  text-align: left;
+}
+
+.info-icon {
+  font-size: 1.4rem;
+}
+
+.info-label {
+  display: block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #a17e5c;
+}
+
+.info-value {
+  display: block;
+  font-weight: bold;
+  color: #3a2e2c;
+}
+
+.event-description {
+  color: #5c4a46;
+  font-size: 0.98rem;
+}
+
+/* ---------- Registration ---------- */
+
+.registration {
+  background: #fffefc;
+  border-radius: 16px;
+  padding: 28px 20px;
+  box-shadow: 0 12px 32px rgba(74, 31, 43, 0.12);
+  margin-top: 20px;
+}
+
+.registration h3 {
+  color: #4a1f2b;
+  font-size: 1.25rem;
+  margin-bottom: 4px;
+}
+
+.registration-hint {
+  color: #a17e5c;
+  font-size: 0.9rem;
+  margin-bottom: 24px;
+}
+
+.form-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.step-number {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #7a3b4a;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+}
+
+.step-title {
+  font-weight: bold;
+  color: #4a1f2b;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.form-row label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.8rem;
+  color: #6b5854;
+  gap: 6px;
+}
+
+.form-row input {
+  width: 100%;
+}
+
+.form-row input {
+  font-family: inherit;
+  font-size: 0.95rem;
+  padding: 12px 14px;
+  border: 1px solid #e3d3c7;
+  border-radius: 8px;
+  background: #fdf8f5;
+  color: #3a2e2c;
+}
+
+.form-row input:focus {
+  outline: none;
+  border-color: #7a3b4a;
+}
+
+.form-message {
+  font-size: 0.85rem;
+  min-height: 1.2em;
+  margin-bottom: 8px;
+}
+
+.form-message.success {
+  color: #3a7a4a;
+}
+
+.form-message.error {
+  color: #a13a3a;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 16px;
+  margin-top: 8px;
+  background: #4a1f2b;
+  color: #f5e9dc;
+  border: none;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: #7a3b4a;
+}
+
+footer {
+  text-align: center;
+  padding: 24px;
+  color: #a17e5c;
+  font-size: 0.85rem;
+}
+
+/* A partir de "Faça sua inscrição" pra baixo, usa Arial */
+.registration,
+footer {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ---------- Telas maiores (tablet/desktop) ---------- */
+
+@media (min-width: 640px) {
+  .hero-wrapper {
+    padding: 32px 24px 0;
+  }
+
+  .hero-frame {
+    border-radius: 32px 32px 0 0;
+  }
+
+  .badge {
+    margin-top: -26px;
+    padding: 12px 28px;
+    font-size: 0.9rem;
+  }
+
+  main {
+    margin-top: 8px;
+    padding: 0 24px 64px;
+  }
+
+  .event-info,
+  .registration {
+    padding: 40px 32px;
+  }
+
+  .event-info h2 {
+    font-size: 1.8rem;
+    margin-bottom: 24px;
+  }
+
+  .info-cards {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .info-card {
+    flex: 1 1 220px;
+  }
+
+  .registration h3 {
+    font-size: 1.4rem;
+  }
+
+  .form-row {
+    flex-direction: row;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+}
