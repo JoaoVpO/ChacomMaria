@@ -45,11 +45,12 @@ body {
   align-items: center;
   gap: 2px;
   margin-top: -22px;
+  margin-bottom: -8px;
   background: #fdf8f5;
   color: #4a1f2b;
-  padding: 12px 26px;
+  padding: 8px 22px;
   border-radius: 14px;
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   font-weight: bold;
   letter-spacing: 0.3px;
   box-shadow: 0 8px 20px rgba(74, 31, 43, 0.18);
@@ -72,7 +73,7 @@ body {
 }
 
 .badge-date {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: normal;
   color: #a17e5c;
 }
