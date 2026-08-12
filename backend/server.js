@@ -78,4 +78,4 @@ app.patch('/api/inscricoes/:id/pagamento', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3002;
-app.listen(PORT, '127.0.0.1', () => console.log(`Chá com Maria backend rodando em 127.0.0.1:${PORT}`));
+app.listen(PORT, () => console.log(`Chá com Maria backend rodando na porta ${PORT}`));
