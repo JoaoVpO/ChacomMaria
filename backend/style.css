@@ -51,9 +51,9 @@ body {
   gap: 2px;
   background: #fdf8f5;
   color: #4a1f2b;
-  padding: 6px 18px;
+  padding: 8px 22px;
   border-radius: 14px;
-  font-size: 0.88rem;
+  font-size: 0.95rem;
   font-weight: bold;
   letter-spacing: 0.3px;
   box-shadow: 0 8px 20px rgba(74, 31, 43, 0.18);
@@ -65,7 +65,7 @@ body {
 
 .badge-dot {
   position: absolute;
-  left: 4px;
+  left: 6px;
   top: 50%;
   transform: translateY(-50%);
   width: 10px;
@@ -473,12 +473,12 @@ footer {
   }
 
   .badge {
-    padding: 14px 30px;
-    font-size: 1.2rem;
+    padding: 16px 34px;
+    font-size: 1.3rem;
   }
 
   .badge-dot {
-    left: 10px;
+    left: 12px;
   }
 
   main {
