@@ -24,9 +24,9 @@ app.get('/api/inscricoes/limite', async (req, res) => {
 });
 
 app.post('/api/inscricao', async (req, res) => {
-  const { nome, email, cidade, telefone, quantidade, valor_total } = req.body || {};
-  if (!nome || !email || !cidade || !telefone) {
-    return res.status(400).json({ error: 'nome, email, cidade e telefone são obrigatórios' });
+  const { nome, cidade, telefone, quantidade, valor_total } = req.body || {};
+  if (!nome || !cidade || !telefone) {
+    return res.status(400).json({ error: 'nome, cidade e telefone são obrigatórios' });
   }
 
   const qtd = Math.max(1, parseInt(quantidade, 10) || 1);
@@ -40,7 +40,7 @@ app.post('/api/inscricao', async (req, res) => {
 
     const [result] = await db.query(
       'INSERT INTO clientes (nome, email, cidade, telefone, quantidade, valor_total) VALUES (?, ?, ?, ?, ?, ?)',
-      [nome, email, cidade, telefone, qtd, valor]
+      [nome, '', cidade, telefone, qtd, valor]
     );
     return res.json({ id: result.insertId });
   } catch (err) {
