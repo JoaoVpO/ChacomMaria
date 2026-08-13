@@ -20,6 +20,52 @@ body {
   padding: 20px 16px 0;
   text-align: center;
   background: linear-gradient(180deg, rgba(211, 193, 182, 0.75) 0%, rgba(211, 193, 182, 0.35) 45%, rgba(211, 193, 182, 0) 100%);
+  overflow: hidden;
+}
+
+.leaves {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.leaf {
+  position: absolute;
+  top: -10%;
+  width: 13px;
+  height: 13px;
+  border-radius: 0 60% 0 60%;
+  opacity: 0;
+  animation: cairFolha linear infinite;
+}
+
+.leaf-1 { left: 6%;  background: #a17e5c; width: 14px; height: 14px; animation-duration: 9s;   animation-delay: 0s; }
+.leaf-2 { left: 22%; background: #c9a896; width: 10px; height: 10px; animation-duration: 11s;  animation-delay: 2s; }
+.leaf-3 { left: 40%; background: #7a3b4a; width: 12px; height: 12px; animation-duration: 8s;   animation-delay: 4s; }
+.leaf-4 { left: 62%; background: #a17e5c; width: 12px; height: 12px; animation-duration: 12s;  animation-delay: 1s; }
+.leaf-5 { left: 80%; background: #c9a896; width: 10px; height: 10px; animation-duration: 10s;  animation-delay: 3s; }
+.leaf-6 { left: 92%; background: #7a3b4a; width: 11px; height: 11px; animation-duration: 9.5s; animation-delay: 5s; }
+
+@keyframes cairFolha {
+  0% {
+    transform: translateY(-20px) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.55;
+  }
+  50% {
+    transform: translateY(320px) translateX(16px) rotate(180deg);
+  }
+  90% {
+    opacity: 0.55;
+  }
+  100% {
+    transform: translateY(640px) translateX(-12px) rotate(360deg);
+    opacity: 0;
+  }
 }
 
 .hero-frame {
@@ -96,12 +142,14 @@ body {
 /* ---------- Event Info ---------- */
 
 .event-info {
-  background: #fffefc;
-  border-radius: 16px;
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 254, 252, 0.85);
+  border-radius: 0;
   padding: 28px 20px;
   box-shadow: 0 12px 32px rgba(74, 31, 43, 0.12);
   text-align: center;
-  margin-top: -16px;
+  margin-top: 0;
 }
 
 .event-info h2 {
