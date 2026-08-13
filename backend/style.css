@@ -103,6 +103,7 @@ main {
   font-weight: bold;
   font-style: italic;
   font-size: 1.5rem;
+  margin-top: 24px;
   margin-bottom: 20px;
   color: #4a1f2b;
 }
