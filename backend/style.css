@@ -95,12 +95,6 @@ body {
 
 /* ---------- Event Info ---------- */
 
-main {
-  max-width: 640px;
-  margin: 4px auto 0;
-  padding: 0 16px 48px;
-}
-
 .event-info {
   background: #fffefc;
   border-radius: 16px;
@@ -491,11 +485,6 @@ footer {
 
   .badge-dot {
     left: 12px;
-  }
-
-  main {
-    margin-top: 8px;
-    padding: 0 24px 64px;
   }
 
   .event-info,
