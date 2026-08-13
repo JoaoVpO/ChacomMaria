@@ -5,9 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Pagamento — Chá com Maria</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,600;1,400;1,500&display=swap" />
-<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="style.css?v=15" />
 <style>
+  .leaves-bg {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+  }
   .pay-wrapper {
+    position: relative;
+    z-index: 1;
     max-width: 480px;
     margin: 20px auto;
     padding: 0 16px;
@@ -128,6 +137,15 @@
 </style>
 </head>
 <body>
+
+  <div class="leaves-bg" aria-hidden="true">
+    <span class="leaf leaf-1"></span>
+    <span class="leaf leaf-2"></span>
+    <span class="leaf leaf-3"></span>
+    <span class="leaf leaf-4"></span>
+    <span class="leaf leaf-5"></span>
+    <span class="leaf leaf-6"></span>
+  </div>
 
   <div class="pay-wrapper">
     <div class="pay-card">
