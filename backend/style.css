@@ -65,7 +65,7 @@ body {
 
 .badge-dot {
   position: absolute;
-  left: 12px;
+  left: 4px;
   top: 50%;
   transform: translateY(-50%);
   width: 10px;
@@ -475,6 +475,10 @@ footer {
   .badge {
     padding: 14px 30px;
     font-size: 1.2rem;
+  }
+
+  .badge-dot {
+    left: 10px;
   }
 
   main {
