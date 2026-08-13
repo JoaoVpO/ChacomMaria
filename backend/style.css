@@ -46,7 +46,7 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  margin-top: -60px;
+  margin-top: -90px;
   margin-bottom: -8px;
   background: #fdf8f5;
   color: #4a1f2b;
@@ -94,7 +94,7 @@ main {
   padding: 28px 20px;
   box-shadow: 0 12px 32px rgba(74, 31, 43, 0.12);
   text-align: center;
-  margin-top: -24px;
+  margin-top: 6px;
 }
 
 .event-info h2 {
@@ -468,7 +468,7 @@ footer {
   }
 
   .badge {
-    margin-top: -65px;
+    margin-top: -95px;
     padding: 14px 30px;
     font-size: 1.2rem;
   }
