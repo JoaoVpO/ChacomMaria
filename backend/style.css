@@ -25,7 +25,6 @@ body {
 .hero-frame {
   position: relative;
   border-radius: 24px 24px 0 0;
-  overflow: hidden;
   aspect-ratio: 3 / 2;
   background: #4a1f2b;
   box-shadow: 0 12px 32px rgba(74, 31, 43, 0.2);
@@ -37,17 +36,19 @@ body {
   height: 100%;
   object-fit: cover;
   object-position: center 70%;
+  border-radius: 24px 24px 0 0;
 }
 
 .badge {
-  position: relative;
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translate(-50%, 50%);
   z-index: 10;
   display: inline-flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  margin-top: -90px;
-  margin-bottom: -8px;
   background: #fdf8f5;
   color: #4a1f2b;
   padding: 6px 18px;
@@ -94,7 +95,7 @@ main {
   padding: 28px 20px;
   box-shadow: 0 12px 32px rgba(74, 31, 43, 0.12);
   text-align: center;
-  margin-top: 6px;
+  margin-top: -16px;
 }
 
 .event-info h2 {
@@ -467,8 +468,11 @@ footer {
     border-radius: 32px 32px 0 0;
   }
 
+  .hero-flyer {
+    border-radius: 32px 32px 0 0;
+  }
+
   .badge {
-    margin-top: -95px;
     padding: 14px 30px;
     font-size: 1.2rem;
   }
