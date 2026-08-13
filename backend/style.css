@@ -73,6 +73,18 @@ body {
   border-radius: 50%;
   background: #3fbf5f;
   box-shadow: 0 0 0 4px rgba(63, 191, 95, 0.25);
+  animation: badgeDotPiscar 1.4s ease-in-out infinite;
+}
+
+@keyframes badgeDotPiscar {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 0 4px rgba(63, 191, 95, 0.25);
+  }
+  50% {
+    opacity: 0.35;
+    box-shadow: 0 0 0 4px rgba(63, 191, 95, 0.05);
+  }
 }
 
 .badge-date {
