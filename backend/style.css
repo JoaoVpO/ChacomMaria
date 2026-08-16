@@ -40,6 +40,7 @@ body {
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
+  filter: hue-rotate(39deg) saturate(0.65) brightness(1.1);
   opacity: 0;
   animation: cairFolha linear infinite;
 }
