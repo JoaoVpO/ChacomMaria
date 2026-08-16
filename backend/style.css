@@ -165,6 +165,15 @@ body {
   color: #4a1f2b;
 }
 
+.event-subtitle {
+  font-family: 'Dancing Script', cursive;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-top: -12px;
+  margin-bottom: 20px;
+  color: #4a1f2b;
+}
+
 .info-cards {
   display: flex;
   flex-direction: column;
