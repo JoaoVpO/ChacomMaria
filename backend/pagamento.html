@@ -109,6 +109,30 @@
   .pay-hint {
     font-size: 0.82rem;
     color: #6b5854;
+    margin-bottom: 18px;
+  }
+  .pay-whatsapp {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.9rem;
+    font-weight: bold;
+    padding: 12px 16px;
+    border-radius: 8px;
+    background: #25D366;
+    color: #fff;
+    text-decoration: none;
+  }
+  .pay-whatsapp:hover {
+    background: #1ebe5a;
+  }
+  .pay-whatsapp svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
   }
 
   @media (min-width: 640px) {
@@ -165,7 +189,12 @@
         <button id="copiarChave">Copiar</button>
       </div>
 
-      <p class="pay-hint">Após pagar, sua inscrição para o Chá com Maria estará confirmada. Guarde o comprovante.</p>
+      <p class="pay-hint">Após pagar, envie o comprovante pelo WhatsApp para confirmar sua inscrição.</p>
+
+      <a id="linkWhatsapp" class="pay-whatsapp" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.4-1.5-.9-.8-1.5-1.8-1.6-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.5.1-.2 0-.4 0-.5C10 9 9.4 7.6 9.2 7c-.2-.5-.4-.5-.6-.5h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3 4.8 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.3-.1-.2-.3-.3-.6-.4z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3C8.4 21.6 10.1 22 12 22c5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.7 0-3.3-.5-4.7-1.3l-.3-.2-3.5 1 1-3.4-.2-.3C3.5 14.5 3 13.3 3 12c0-4.9 4-9 9-9s9 4 9 9-4 9-9 9z"/></svg>
+        Enviar comprovante no WhatsApp
+      </a>
     </div>
   </div>
 
@@ -173,6 +202,10 @@
     const params = new URLSearchParams(window.location.search);
     const valor = parseFloat(params.get('valor')) || 63;
     document.getElementById('valorPagamento').textContent = valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+    const valorFormatado = valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    const mensagemWhatsapp = `Olá! Acabei de pagar a inscrição do Chá com Maria (${valorFormatado}). Segue o comprovante:`;
+    document.getElementById('linkWhatsapp').href = `https://wa.me/5544999351008?text=${encodeURIComponent(mensagemWhatsapp)}`;
 
     document.getElementById('copiarChave').addEventListener('click', () => {
       const input = document.getElementById('chavePix');
