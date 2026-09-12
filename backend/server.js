@@ -59,7 +59,7 @@ app.post('/api/inscricoes/manual', async (req, res) => {
 
   const qtd = Math.max(1, parseInt(quantidade, 10) || 1);
   const valor = parseFloat(valor_total) || qtd * 63;
-  const status = status_pagamento === 'pendente' ? 'pendente' : 'pago';
+  const status = ['pendente', 'admin'].includes(status_pagamento) ? status_pagamento : 'pago';
 
   try {
     // Inscrição manual (feita pelo admin) não conta pro limite de vagas do site
@@ -89,8 +89,8 @@ app.get('/api/inscricoes', async (req, res) => {
 app.patch('/api/inscricoes/:id/pagamento', async (req, res) => {
   const { id } = req.params;
   const { status } = req.body || {};
-  if (!['pendente', 'pago'].includes(status)) {
-    return res.status(400).json({ error: 'status deve ser "pendente" ou "pago"' });
+  if (!['pendente', 'pago', 'admin'].includes(status)) {
+    return res.status(400).json({ error: 'status deve ser "pendente", "pago" ou "admin"' });
   }
 
   try {

@@ -179,6 +179,22 @@
     color: var(--green);
   }
   .status.pago::before { background: var(--green); }
+  .status.admin {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .status.admin::before { background: var(--accent); }
+
+  .section-row td {
+    padding: 14px 18px 8px !important;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    border-bottom: none !important;
+  }
+  .section-row:first-child td { padding-top: 4px !important; }
 
   .status-select {
     font-family: inherit;
@@ -450,6 +466,7 @@
         <select id="addStatus">
           <option value="pago" selected>Pago</option>
           <option value="pendente">Pendente</option>
+          <option value="admin">Admin (não paga)</option>
         </select>
         <button type="submit" id="addBtn">Adicionar</button>
         <p class="add-form-msg" id="addMsg"></p>
@@ -572,7 +589,7 @@
           return;
         }
 
-        tbody.innerHTML = rows.map(r => `
+        const linhaHtml = (r) => `
           <tr>
             <td class="name-cell">${r.nome}</td>
             <td class="muted">${r.telefone}</td>
@@ -585,13 +602,26 @@
                 <select class="status-select" data-id="${r.id}">
                   <option value="pendente" ${r.status_pagamento === 'pendente' ? 'selected' : ''}>Pendente</option>
                   <option value="pago" ${r.status_pagamento === 'pago' ? 'selected' : ''}>Pago</option>
+                  <option value="admin" ${r.status_pagamento === 'admin' ? 'selected' : ''}>Admin (não paga)</option>
                 </select>
                 <a class="whatsapp-btn" href="${linkWhatsapp(r.telefone, r.nome)}" target="_blank" rel="noopener" title="Enviar confirmação no WhatsApp" aria-label="Enviar confirmação no WhatsApp">${ICONE_WHATSAPP}</a>
                 <button class="remover-btn" data-id="${r.id}" data-nome="${r.nome}" title="Remover inscrição" aria-label="Remover inscrição">✕</button>
               </div>
             </td>
           </tr>
-        `).join('');
+        `;
+
+        const trabalhadores = rows.filter(r => r.status_pagamento === 'admin');
+        const inscricoes = rows.filter(r => r.status_pagamento !== 'admin');
+
+        tbody.innerHTML =
+          (trabalhadores.length
+            ? `<tr class="section-row"><td colspan="7">👷 Trabalhadores (Acolhida)</td></tr>${trabalhadores.map(linhaHtml).join('')}
+               <tr class="section-row"><td colspan="7">🎟️ Inscrições</td></tr>`
+            : '') +
+          (inscricoes.length
+            ? inscricoes.map(linhaHtml).join('')
+            : '<tr><td colspan="7" class="empty">Nenhuma inscrição ainda.</td></tr>');
 
         tbody.querySelectorAll('.status-select').forEach(select => {
           select.addEventListener('change', async () => {
