@@ -111,41 +111,6 @@
     color: #6b5854;
     margin-bottom: 18px;
   }
-  .pay-status {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    font-size: 0.85rem;
-    font-weight: bold;
-    padding: 10px 14px;
-    border-radius: 8px;
-    margin-bottom: 18px;
-  }
-  .pay-status.aguardando {
-    background: #fdf3df;
-    color: #8a5a00;
-  }
-  .pay-status.confirmado {
-    background: #e8f8ee;
-    color: #17a34a;
-  }
-  .pay-status.erro {
-    background: #fbe9e9;
-    color: #b3261e;
-  }
-  .pay-spinner {
-    width: 13px;
-    height: 13px;
-    border: 2px solid rgba(138,90,0,0.3);
-    border-top-color: #8a5a00;
-    border-radius: 50%;
-    animation: pay-spin 0.8s linear infinite;
-    flex-shrink: 0;
-  }
-  @keyframes pay-spin {
-    to { transform: rotate(360deg); }
-  }
   .pay-whatsapp {
     display: flex;
     align-items: center;
@@ -216,20 +181,15 @@
       <h1>Chá com Maria</h1>
       <p class="pay-value" id="valorPagamento">R$ 63,00</p>
 
-      <div class="pay-status aguardando" id="payStatus">
-        <span class="pay-spinner"></span>
-        <span id="payStatusTexto">Gerando seu Pix...</span>
-      </div>
-
-      <div class="pay-qrcode" id="payQrcodeBox">Carregando QR code...</div>
+      <div class="pay-qrcode"><img src="images/pix.jpeg" alt="QR code Pix" /></div>
 
       <p class="pay-key-label">Pix Copia e Cola</p>
       <div class="pay-key">
-        <input type="text" id="chavePix" value="" placeholder="Gerando código..." readonly />
+        <input type="text" id="chavePix" value="00020126850014br.gov.bcb.pix01367e12eb01-be2d-4c73-924d-f5f1fab721bd0223Inscricao Cha com Maria520400005303986540563.005802BR5913MEIRI MIRANDA6009Sao Paulo62230519daqr55030327959557563045EDB" readonly />
         <button id="copiarChave">Copiar</button>
       </div>
 
-      <p class="pay-hint">O pagamento é confirmado automaticamente assim que o Pix cai. Se preferir, também pode avisar pelo WhatsApp.</p>
+      <p class="pay-hint">Após pagar, envie o comprovante pelo WhatsApp para confirmar sua inscrição.</p>
 
       <a id="linkWhatsapp" class="pay-whatsapp" href="#" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.4-1.5-.9-.8-1.5-1.8-1.6-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.5.1-.2 0-.4 0-.5C10 9 9.4 7.6 9.2 7c-.2-.5-.4-.5-.6-.5h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3 4.8 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.3-.1-.2-.3-.3-.6-.4z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3C8.4 21.6 10.1 22 12 22c5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.7 0-3.3-.5-4.7-1.3l-.3-.2-3.5 1 1-3.4-.2-.3C3.5 14.5 3 13.3 3 12c0-4.9 4-9 9-9s9 4 9 9-4 9-9 9z"/></svg>
@@ -240,7 +200,6 @@
 
   <script>
     const params = new URLSearchParams(window.location.search);
-    const inscricaoId = params.get('id');
     const valor = parseFloat(params.get('valor')) || 63;
     document.getElementById('valorPagamento').textContent = valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
@@ -253,68 +212,6 @@
       input.select();
       navigator.clipboard.writeText(input.value);
     });
-
-    function setStatus(classe, texto, comSpinner) {
-      const box = document.getElementById('payStatus');
-      box.className = `pay-status ${classe}`;
-      box.innerHTML = comSpinner
-        ? `<span class="pay-spinner"></span><span>${texto}</span>`
-        : `<span>${texto}</span>`;
-    }
-
-    let poll;
-
-    function confirmarPagamento() {
-      clearInterval(poll);
-      setStatus('confirmado', '✅ Pagamento confirmado! Sua inscrição está garantida.', false);
-    }
-
-    async function gerarPix() {
-      if (!inscricaoId) {
-        setStatus('erro', 'Inscrição não encontrada. Volte e preencha o formulário novamente.', false);
-        document.getElementById('payQrcodeBox').textContent = '—';
-        return;
-      }
-
-      try {
-        const resp = await fetch(`/api/inscricao/${inscricaoId}/pix`, { method: 'POST' });
-        const data = await resp.json();
-        if (!resp.ok) throw new Error(data.error || 'Falha ao gerar Pix');
-
-        if (data.status === 'approved') {
-          confirmarPagamento();
-          return;
-        }
-
-        if (data.qr_code_base64) {
-          document.getElementById('payQrcodeBox').innerHTML =
-            `<img src="data:image/png;base64,${data.qr_code_base64}" alt="QR code Pix" />`;
-        }
-        if (data.qr_code) {
-          document.getElementById('chavePix').value = data.qr_code;
-        }
-
-        setStatus('aguardando', 'Aguardando o pagamento...', true);
-        iniciarPolling();
-      } catch (err) {
-        console.error('Erro ao gerar Pix', err);
-        setStatus('erro', 'Não foi possível gerar o Pix agora. Tente recarregar a página.', false);
-      }
-    }
-
-    function iniciarPolling() {
-      poll = setInterval(async () => {
-        try {
-          const resp = await fetch(`/api/inscricao/${inscricaoId}/status`);
-          const data = await resp.json();
-          if (data.status === 'pago') confirmarPagamento();
-        } catch (err) {
-          console.error('Erro ao consultar status', err);
-        }
-      }, 4000);
-    }
-
-    gerarPix();
   </script>
 
 </body>
