@@ -257,6 +257,81 @@
     font-size: 0.9rem;
   }
 
+  .vagas-bar-track {
+    width: 100%;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--border);
+    overflow: hidden;
+    margin-top: 8px;
+  }
+  .vagas-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 999px;
+    transition: width 0.3s ease;
+  }
+  .vagas-bar-fill.cheio {
+    background: #d64545;
+  }
+
+  .add-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .add-card h2 {
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+  }
+  .add-form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .add-form input,
+  .add-form select {
+    font-family: inherit;
+    font-size: 0.85rem;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--text);
+  }
+  .add-form button {
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+  }
+  .add-form button:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+  .add-form-msg {
+    font-size: 0.8rem;
+    min-height: 1.2em;
+  }
+  .add-form-msg.erro { color: #b3261e; }
+  .add-form-msg.sucesso { color: var(--green); }
+
+  @media (min-width: 640px) {
+    .add-form {
+      grid-template-columns: repeat(6, 1fr);
+      align-items: end;
+    }
+    .add-form .campo-nome { grid-column: span 2; }
+    .add-form .add-form-msg { grid-column: 1 / -1; }
+  }
+
   #printArea {
     display: none;
   }
@@ -338,6 +413,27 @@
         <span class="summary-label"><span class="summary-icon amber">R$</span>Arrecadado</span>
         <span class="summary-value" id="totalArrecadado">R$ 0,00</span>
       </div>
+      <div class="summary-card">
+        <span class="summary-label"><span class="summary-icon purple">🎟️</span>Vagas</span>
+        <span class="summary-value" id="totalVagas">0/150</span>
+        <div class="vagas-bar-track"><div class="vagas-bar-fill" id="vagasBarFill" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <div class="add-card">
+      <h2>➕ Adicionar inscrição manualmente</h2>
+      <form class="add-form" id="formAdicionar">
+        <input class="campo-nome" type="text" id="addNome" placeholder="Nome" required />
+        <input type="tel" id="addTelefone" placeholder="Telefone" required />
+        <input type="text" id="addCidade" placeholder="Cidade" required />
+        <input type="number" id="addQuantidade" placeholder="Qtd." value="1" min="1" required />
+        <select id="addStatus">
+          <option value="pago" selected>Pago</option>
+          <option value="pendente">Pendente</option>
+        </select>
+        <button type="submit" id="addBtn">Adicionar</button>
+        <p class="add-form-msg" id="addMsg"></p>
+      </form>
     </div>
 
     <div class="card">
@@ -383,6 +479,60 @@
       const mensagem = `Olá, ${nome}! ✅ Confirmamos o recebimento do seu pagamento para o Chá com Maria. Sua inscrição está garantida! Nos vemos lá. 🌸`;
       return `https://wa.me/${numeroCompleto}?text=${encodeURIComponent(mensagem)}`;
     }
+
+    async function carregarVagas() {
+      try {
+        const resp = await fetch('/api/inscricoes/limite');
+        const data = await resp.json();
+        document.getElementById('totalVagas').textContent = `${data.total}/${data.limite}`;
+        const pct = Math.min(100, (data.total / data.limite) * 100);
+        const fill = document.getElementById('vagasBarFill');
+        fill.style.width = `${pct}%`;
+        fill.classList.toggle('cheio', data.esgotado);
+        const btn = document.getElementById('addBtn');
+        if (btn) btn.disabled = data.esgotado;
+      } catch (e) {
+        console.error('Erro ao carregar vagas', e);
+      }
+    }
+
+    document.getElementById('formAdicionar').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msg = document.getElementById('addMsg');
+      const btn = document.getElementById('addBtn');
+      msg.textContent = '';
+      msg.className = 'add-form-msg';
+      btn.disabled = true;
+
+      const payload = {
+        nome: document.getElementById('addNome').value.trim(),
+        telefone: document.getElementById('addTelefone').value.trim(),
+        cidade: document.getElementById('addCidade').value.trim(),
+        quantidade: document.getElementById('addQuantidade').value,
+        status_pagamento: document.getElementById('addStatus').value,
+      };
+
+      try {
+        const resp = await fetch('/api/inscricoes/manual', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await resp.json();
+        if (!resp.ok) throw new Error(data.error || 'Erro ao adicionar');
+
+        msg.textContent = 'Inscrição adicionada com sucesso!';
+        msg.className = 'add-form-msg sucesso';
+        document.getElementById('formAdicionar').reset();
+        document.getElementById('addQuantidade').value = 1;
+        carregar();
+        carregarVagas();
+      } catch (err) {
+        msg.textContent = err.message;
+        msg.className = 'add-form-msg erro';
+        btn.disabled = false;
+      }
+    });
 
     async function carregar() {
       try {
@@ -458,7 +608,8 @@
     });
 
     carregar();
-    setInterval(carregar, 10000);
+    carregarVagas();
+    setInterval(() => { carregar(); carregarVagas(); }, 10000);
   </script>
 
 </body>

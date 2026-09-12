@@ -10,5 +10,7 @@ CREATE TABLE IF NOT EXISTS clientes (
   quantidade INT NOT NULL DEFAULT 1,
   valor_total DECIMAL(10,2) NOT NULL DEFAULT 0,
   status_pagamento ENUM('pendente','pago') NOT NULL DEFAULT 'pendente',
+  mp_payment_id VARCHAR(50) DEFAULT NULL,
+  origem ENUM('site','manual') NOT NULL DEFAULT 'site',
   PRIMARY KEY (id)
 );
