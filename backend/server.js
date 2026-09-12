@@ -102,6 +102,17 @@ app.patch('/api/inscricoes/:id/pagamento', async (req, res) => {
   }
 });
 
+app.delete('/api/inscricoes/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    await db.query('DELETE FROM clientes WHERE id = ?', [id]);
+    return res.json({ ok: true });
+  } catch (err) {
+    console.error('Erro ao remover inscrição', err);
+    return res.status(500).json({ error: 'Falha ao remover inscrição', detail: err.message });
+  }
+});
+
 function respostaPix(pagamento) {
   const dados = pagamento.point_of_interaction?.transaction_data || {};
   return {

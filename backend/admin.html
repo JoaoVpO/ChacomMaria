@@ -223,6 +223,26 @@
     fill: #fff;
   }
 
+  .remover-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #fbe9e9;
+    color: #b3261e;
+    border: none;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s ease;
+  }
+  .remover-btn:hover {
+    background: #f6d0d0;
+  }
+
   .header-actions {
     display: flex;
     align-items: center;
@@ -567,6 +587,7 @@
                   <option value="pago" ${r.status_pagamento === 'pago' ? 'selected' : ''}>Pago</option>
                 </select>
                 <a class="whatsapp-btn" href="${linkWhatsapp(r.telefone, r.nome)}" target="_blank" rel="noopener" title="Enviar confirmação no WhatsApp" aria-label="Enviar confirmação no WhatsApp">${ICONE_WHATSAPP}</a>
+                <button class="remover-btn" data-id="${r.id}" data-nome="${r.nome}" title="Remover inscrição" aria-label="Remover inscrição">✕</button>
               </div>
             </td>
           </tr>
@@ -584,6 +605,20 @@
               carregar();
             } catch (e) {
               select.disabled = false;
+            }
+          });
+        });
+
+        tbody.querySelectorAll('.remover-btn').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const confirmou = confirm(`Remover a inscrição de "${btn.dataset.nome}"? Essa ação não pode ser desfeita.`);
+            if (!confirmou) return;
+            btn.disabled = true;
+            try {
+              await fetch(`/api/inscricoes/${btn.dataset.id}`, { method: 'DELETE' });
+              carregar();
+            } catch (e) {
+              btn.disabled = false;
             }
           });
         });
