@@ -598,7 +598,7 @@
         const rows = data.inscricoes || [];
 
         document.getElementById('totalInscritos').textContent = rows.length;
-        document.getElementById('totalPagos').textContent = rows.filter(r => r.status_pagamento === 'pago').length;
+        document.getElementById('totalPagos').textContent = rows.filter(r => ['pago', 'admin'].includes(r.status_pagamento)).length;
         document.getElementById('totalArrecadado').textContent = money(
           rows.filter(r => r.status_pagamento === 'pago').reduce((sum, r) => sum + parseFloat(r.valor_total), 0)
         );
