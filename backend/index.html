@@ -192,9 +192,7 @@
         const result = await resp.json();
         message.textContent = 'Inscrição salva! Abrindo pagamento...';
         message.className = 'form-message success';
-        window.open(`pagamento.html?id=${result.id}&valor=${valorTotal}`, '_blank');
-        form.reset();
-        atualizarTotal();
+        window.location.href = `pagamento.html?id=${result.id}&valor=${valorTotal}`;
       } catch (err) {
         message.textContent = 'Não foi possível enviar sua inscrição. Tente novamente.';
         message.className = 'form-message error';
