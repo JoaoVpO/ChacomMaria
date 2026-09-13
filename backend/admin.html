@@ -534,7 +534,7 @@
       const digitos = String(telefone || '').replace(/\D/g, '');
       const numeroCompleto = digitos.startsWith('55') ? digitos : `55${digitos}`;
       const primeiroNome = String(nome || '').trim().split(' ')[0];
-      const mensagem = `Salve Maria, ${primeiroNome}! 💗\nTudo bem?\nPassando para confirmar que recebemos o seu pagamento referente ao 1º Chá com Maria do Movimento Filhas de Maria. ✨\nSua inscrição está confirmada e sua vaga está garantida! 🥰\nFicamos muito felizes em ter você conosco nesse momento tão especial. 💐\nNos vemos lá! Que Maria nos abençoe e nos prepare para esse encontro. 💗✨`;
+      const mensagem = `Salve Maria, ${primeiroNome}! 🩷\nTudo bem?\nPassando para confirmar que recebemos o seu pagamento referente ao 1º Chá com Maria do Movimento Filhas de Maria. ✨\nSua inscrição está confirmada e sua vaga está garantida! 🥰\nFicamos muito felizes em ter você conosco nesse momento tão especial. 💐\nNos vemos lá! Que Maria nos abençoe e nos prepare para esse encontro. 🩷✨`;
       return `https://wa.me/${numeroCompleto}?text=${encodeURIComponent(mensagem)}`;
     }
 
