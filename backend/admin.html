@@ -276,6 +276,25 @@
     background: #f6d0d0;
   }
 
+  .editar-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s ease;
+  }
+  .editar-btn:hover {
+    background: #e3d6f7;
+  }
+
   .header-actions {
     display: flex;
     align-items: center;
@@ -642,6 +661,7 @@
                 <option value="admin" ${r.status_pagamento === 'admin' ? 'selected' : ''}>Admin (não paga)</option>
               </select>
               <a class="whatsapp-btn" href="${linkWhatsapp(r.telefone, r.nome)}" target="_blank" rel="noopener" title="Enviar confirmação no WhatsApp" aria-label="Enviar confirmação no WhatsApp">${ICONE_WHATSAPP}</a>
+              <button class="editar-btn" data-id="${r.id}" data-nome="${r.nome}" data-telefone="${r.telefone}" data-cidade="${r.cidade}" title="Editar inscrição" aria-label="Editar inscrição">✏️</button>
               <button class="remover-btn" data-id="${r.id}" data-nome="${r.nome}" title="Remover inscrição" aria-label="Remover inscrição">✕</button>
             </div>
           </td>
@@ -672,6 +692,31 @@
             carregar();
           } catch (e) {
             select.disabled = false;
+          }
+        });
+      });
+
+      tbody.querySelectorAll('.editar-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const novoNome = prompt('Nome:', btn.dataset.nome);
+          if (novoNome === null) return;
+          const novoTelefone = prompt('Telefone:', btn.dataset.telefone);
+          if (novoTelefone === null) return;
+          const novaCidade = prompt('Cidade:', btn.dataset.cidade);
+          if (novaCidade === null) return;
+
+          btn.disabled = true;
+          try {
+            const resp = await fetch(`/api/inscricoes/${btn.dataset.id}`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ nome: novoNome.trim(), telefone: novoTelefone.trim(), cidade: novaCidade.trim() })
+            });
+            if (!resp.ok) throw new Error((await resp.json()).error || 'Falha ao editar');
+            carregar();
+          } catch (e) {
+            alert(e.message);
+            btn.disabled = false;
           }
         });
       });

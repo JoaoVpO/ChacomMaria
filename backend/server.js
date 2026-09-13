@@ -112,6 +112,25 @@ app.patch('/api/inscricoes/:id/pagamento', async (req, res) => {
   }
 });
 
+app.patch('/api/inscricoes/:id', async (req, res) => {
+  const { id } = req.params;
+  const { nome, telefone, cidade } = req.body || {};
+  if (!nome || !telefone || !cidade) {
+    return res.status(400).json({ error: 'nome, cidade e telefone são obrigatórios' });
+  }
+
+  try {
+    await db.query(
+      'UPDATE clientes SET nome = ?, telefone = ?, cidade = ? WHERE id = ?',
+      [nome, telefone.replace(/\D/g, ''), cidade, id]
+    );
+    return res.json({ ok: true });
+  } catch (err) {
+    console.error('Erro ao editar inscrição', err);
+    return res.status(500).json({ error: 'Falha ao editar inscrição', detail: err.message });
+  }
+});
+
 app.delete('/api/inscricoes/:id', async (req, res) => {
   const { id } = req.params;
   try {
