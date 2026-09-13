@@ -17,7 +17,7 @@ const LIMITE_VAGAS = 150;
 
 app.get('/api/inscricoes/limite', async (req, res) => {
   try {
-    const [[{ total }]] = await db.query("SELECT COUNT(*) AS total FROM clientes WHERE origem = 'site'");
+    const [[{ total }]] = await db.query("SELECT COUNT(*) AS total FROM clientes WHERE origem = 'site' AND status_pagamento = 'pago'");
     return res.json({ total, limite: LIMITE_VAGAS, esgotado: total >= LIMITE_VAGAS });
   } catch (err) {
     console.error('Erro ao consultar limite de vagas', err);
@@ -35,7 +35,7 @@ app.post('/api/inscricao', async (req, res) => {
   const valor = parseFloat(valor_total) || qtd * 63;
 
   try {
-    const [[{ total }]] = await db.query("SELECT COUNT(*) AS total FROM clientes WHERE origem = 'site'");
+    const [[{ total }]] = await db.query("SELECT COUNT(*) AS total FROM clientes WHERE origem = 'site' AND status_pagamento = 'pago'");
     if (total >= LIMITE_VAGAS) {
       return res.status(409).json({ error: 'Vagas esgotadas', esgotado: true });
     }
