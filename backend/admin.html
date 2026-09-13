@@ -116,6 +116,23 @@
     border-radius: 14px;
     overflow: hidden;
   }
+  .busca-wrapper {
+    padding: 16px 18px 0;
+  }
+  .busca-wrapper input {
+    width: 100%;
+    font-family: inherit;
+    font-size: 0.88rem;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .busca-wrapper input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
   .table-wrapper {
     overflow-x: auto;
   }
@@ -474,6 +491,9 @@
     </div>
 
     <div class="card">
+      <div class="busca-wrapper">
+        <input type="text" id="buscaNome" placeholder="🔍 Pesquisar por nome..." />
+      </div>
       <div class="table-wrapper">
         <table>
           <thead>
@@ -583,81 +603,96 @@
           rows.filter(r => r.status_pagamento === 'pago').reduce((sum, r) => sum + parseFloat(r.valor_total), 0)
         );
 
-        const tbody = document.getElementById('tableBody');
-        if (!rows.length) {
-          tbody.innerHTML = '<tr><td colspan="7" class="empty">Nenhuma inscrição ainda.</td></tr>';
-          return;
-        }
-
-        const linhaHtml = (r) => `
-          <tr>
-            <td class="name-cell">${r.nome}</td>
-            <td class="muted">${r.telefone}</td>
-            <td class="muted">${r.cidade}</td>
-            <td class="muted">${r.quantidade}</td>
-            <td>${money(r.valor_total)}</td>
-            <td><span class="status ${r.status_pagamento}">${r.status_pagamento}</span></td>
-            <td>
-              <div class="row-actions">
-                <select class="status-select" data-id="${r.id}">
-                  <option value="pendente" ${r.status_pagamento === 'pendente' ? 'selected' : ''}>Pendente</option>
-                  <option value="pago" ${r.status_pagamento === 'pago' ? 'selected' : ''}>Pago</option>
-                  <option value="admin" ${r.status_pagamento === 'admin' ? 'selected' : ''}>Admin (não paga)</option>
-                </select>
-                <a class="whatsapp-btn" href="${linkWhatsapp(r.telefone, r.nome)}" target="_blank" rel="noopener" title="Enviar confirmação no WhatsApp" aria-label="Enviar confirmação no WhatsApp">${ICONE_WHATSAPP}</a>
-                <button class="remover-btn" data-id="${r.id}" data-nome="${r.nome}" title="Remover inscrição" aria-label="Remover inscrição">✕</button>
-              </div>
-            </td>
-          </tr>
-        `;
-
-        const trabalhadores = rows.filter(r => r.status_pagamento === 'admin');
-        const inscricoes = rows.filter(r => r.status_pagamento !== 'admin');
-
-        tbody.innerHTML =
-          (trabalhadores.length
-            ? `<tr class="section-row"><td colspan="7">👷 Trabalhadores (Acolhida)</td></tr>${trabalhadores.map(linhaHtml).join('')}
-               <tr class="section-row"><td colspan="7">🎟️ Inscrições</td></tr>`
-            : '') +
-          (inscricoes.length
-            ? inscricoes.map(linhaHtml).join('')
-            : '<tr><td colspan="7" class="empty">Nenhuma inscrição ainda.</td></tr>');
-
-        tbody.querySelectorAll('.status-select').forEach(select => {
-          select.addEventListener('change', async () => {
-            select.disabled = true;
-            try {
-              await fetch(`/api/inscricoes/${select.dataset.id}/pagamento`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status: select.value })
-              });
-              carregar();
-            } catch (e) {
-              select.disabled = false;
-            }
-          });
-        });
-
-        tbody.querySelectorAll('.remover-btn').forEach(btn => {
-          btn.addEventListener('click', async () => {
-            const confirmou = confirm(`Remover a inscrição de "${btn.dataset.nome}"? Essa ação não pode ser desfeita.`);
-            if (!confirmou) return;
-            btn.disabled = true;
-            try {
-              await fetch(`/api/inscricoes/${btn.dataset.id}`, { method: 'DELETE' });
-              carregar();
-            } catch (e) {
-              btn.disabled = false;
-            }
-          });
-        });
-
         window.ultimaListaInscricoes = rows;
+        renderTabela(filtrarBusca(rows));
       } catch (e) {
         console.error('Erro ao carregar inscrições', e);
       }
     }
+
+    function filtrarBusca(rows) {
+      const termo = document.getElementById('buscaNome').value.trim().toLowerCase();
+      if (!termo) return rows;
+      return rows.filter(r => (r.nome || '').toLowerCase().includes(termo));
+    }
+
+    function renderTabela(rows) {
+      const tbody = document.getElementById('tableBody');
+      const buscando = document.getElementById('buscaNome').value.trim().length > 0;
+
+      if (!rows.length) {
+        tbody.innerHTML = `<tr><td colspan="7" class="empty">${buscando ? 'Nenhum resultado para essa busca.' : 'Nenhuma inscrição ainda.'}</td></tr>`;
+        return;
+      }
+
+      const linhaHtml = (r) => `
+        <tr>
+          <td class="name-cell">${r.nome}</td>
+          <td class="muted">${r.telefone}</td>
+          <td class="muted">${r.cidade}</td>
+          <td class="muted">${r.quantidade}</td>
+          <td>${money(r.valor_total)}</td>
+          <td><span class="status ${r.status_pagamento}">${r.status_pagamento}</span></td>
+          <td>
+            <div class="row-actions">
+              <select class="status-select" data-id="${r.id}">
+                <option value="pendente" ${r.status_pagamento === 'pendente' ? 'selected' : ''}>Pendente</option>
+                <option value="pago" ${r.status_pagamento === 'pago' ? 'selected' : ''}>Pago</option>
+                <option value="admin" ${r.status_pagamento === 'admin' ? 'selected' : ''}>Admin (não paga)</option>
+              </select>
+              <a class="whatsapp-btn" href="${linkWhatsapp(r.telefone, r.nome)}" target="_blank" rel="noopener" title="Enviar confirmação no WhatsApp" aria-label="Enviar confirmação no WhatsApp">${ICONE_WHATSAPP}</a>
+              <button class="remover-btn" data-id="${r.id}" data-nome="${r.nome}" title="Remover inscrição" aria-label="Remover inscrição">✕</button>
+            </div>
+          </td>
+        </tr>
+      `;
+
+      const trabalhadores = rows.filter(r => r.status_pagamento === 'admin');
+      const inscricoes = rows.filter(r => r.status_pagamento !== 'admin');
+
+      tbody.innerHTML =
+        (trabalhadores.length
+          ? `<tr class="section-row"><td colspan="7">👷 Trabalhadores (Acolhida)</td></tr>${trabalhadores.map(linhaHtml).join('')}
+             <tr class="section-row"><td colspan="7">🎟️ Inscrições</td></tr>`
+          : '') +
+        (inscricoes.length
+          ? inscricoes.map(linhaHtml).join('')
+          : `<tr><td colspan="7" class="empty">${buscando ? 'Nenhum resultado para essa busca.' : 'Nenhuma inscrição ainda.'}</td></tr>`);
+
+      tbody.querySelectorAll('.status-select').forEach(select => {
+        select.addEventListener('change', async () => {
+          select.disabled = true;
+          try {
+            await fetch(`/api/inscricoes/${select.dataset.id}/pagamento`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ status: select.value })
+            });
+            carregar();
+          } catch (e) {
+            select.disabled = false;
+          }
+        });
+      });
+
+      tbody.querySelectorAll('.remover-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const confirmou = confirm(`Remover a inscrição de "${btn.dataset.nome}"? Essa ação não pode ser desfeita.`);
+          if (!confirmou) return;
+          btn.disabled = true;
+          try {
+            await fetch(`/api/inscricoes/${btn.dataset.id}`, { method: 'DELETE' });
+            carregar();
+          } catch (e) {
+            btn.disabled = false;
+          }
+        });
+      });
+    }
+
+    document.getElementById('buscaNome').addEventListener('input', () => {
+      renderTabela(filtrarBusca(window.ultimaListaInscricoes || []));
+    });
 
     document.getElementById('printBtn').addEventListener('click', () => {
       const rows = (window.ultimaListaInscricoes || []).filter(r => r.status_pagamento === 'pago');
