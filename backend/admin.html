@@ -201,6 +201,11 @@
     color: var(--accent);
   }
   .status.admin::before { background: var(--accent); }
+  .status.admin_pago {
+    background: var(--green-soft);
+    color: var(--accent);
+  }
+  .status.admin_pago::before { background: var(--accent); }
 
   .section-row td {
     padding: 14px 18px 8px !important;
@@ -503,6 +508,7 @@
           <option value="pago" selected>Pago</option>
           <option value="pendente">Pendente</option>
           <option value="admin">Admin (não paga)</option>
+          <option value="admin_pago">Admin (pago)</option>
         </select>
         <button type="submit" id="addBtn">Adicionar</button>
         <p class="add-form-msg" id="addMsg"></p>
@@ -618,9 +624,9 @@
         const rows = data.inscricoes || [];
 
         document.getElementById('totalInscritos').textContent = rows.length;
-        document.getElementById('totalPagos').textContent = rows.filter(r => ['pago', 'admin'].includes(r.status_pagamento)).length;
+        document.getElementById('totalPagos').textContent = rows.filter(r => ['pago', 'admin', 'admin_pago'].includes(r.status_pagamento)).length;
         document.getElementById('totalArrecadado').textContent = money(
-          rows.filter(r => r.status_pagamento === 'pago').reduce((sum, r) => sum + parseFloat(r.valor_total), 0)
+          rows.filter(r => ['pago', 'admin_pago'].includes(r.status_pagamento)).reduce((sum, r) => sum + parseFloat(r.valor_total), 0)
         );
 
         window.ultimaListaInscricoes = rows;
@@ -659,6 +665,7 @@
                 <option value="pendente" ${r.status_pagamento === 'pendente' ? 'selected' : ''}>Pendente</option>
                 <option value="pago" ${r.status_pagamento === 'pago' ? 'selected' : ''}>Pago</option>
                 <option value="admin" ${r.status_pagamento === 'admin' ? 'selected' : ''}>Admin (não paga)</option>
+                <option value="admin_pago" ${r.status_pagamento === 'admin_pago' ? 'selected' : ''}>Admin (pago)</option>
               </select>
               <a class="whatsapp-btn" href="${linkWhatsapp(r.telefone, r.nome)}" target="_blank" rel="noopener" title="Enviar confirmação no WhatsApp" aria-label="Enviar confirmação no WhatsApp">${ICONE_WHATSAPP}</a>
               <button class="editar-btn" data-id="${r.id}" data-nome="${r.nome}" data-telefone="${r.telefone}" data-cidade="${r.cidade}" title="Editar inscrição" aria-label="Editar inscrição">✏️</button>
@@ -668,8 +675,8 @@
         </tr>
       `;
 
-      const trabalhadores = rows.filter(r => r.status_pagamento === 'admin');
-      const inscricoes = rows.filter(r => r.status_pagamento !== 'admin');
+      const trabalhadores = rows.filter(r => ['admin', 'admin_pago'].includes(r.status_pagamento));
+      const inscricoes = rows.filter(r => !['admin', 'admin_pago'].includes(r.status_pagamento));
 
       tbody.innerHTML =
         (trabalhadores.length

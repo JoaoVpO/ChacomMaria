@@ -17,7 +17,7 @@ const LIMITE_VAGAS = 150;
 
 app.get('/api/inscricoes/limite', async (req, res) => {
   try {
-    const [[{ total }]] = await db.query("SELECT COUNT(*) AS total FROM clientes WHERE status_pagamento IN ('pago', 'admin')");
+    const [[{ total }]] = await db.query("SELECT COUNT(*) AS total FROM clientes WHERE status_pagamento IN ('pago', 'admin', 'admin_pago')");
     return res.json({ total, limite: LIMITE_VAGAS, esgotado: total >= LIMITE_VAGAS });
   } catch (err) {
     console.error('Erro ao consultar limite de vagas', err);
@@ -45,7 +45,7 @@ app.post('/api/inscricao', async (req, res) => {
       return res.json({ id: existente.id });
     }
 
-    const [[{ total }]] = await db.query("SELECT COUNT(*) AS total FROM clientes WHERE status_pagamento IN ('pago', 'admin')");
+    const [[{ total }]] = await db.query("SELECT COUNT(*) AS total FROM clientes WHERE status_pagamento IN ('pago', 'admin', 'admin_pago')");
     if (total >= LIMITE_VAGAS) {
       return res.status(409).json({ error: 'Vagas esgotadas', esgotado: true });
     }
@@ -69,7 +69,7 @@ app.post('/api/inscricoes/manual', async (req, res) => {
 
   const qtd = Math.max(1, parseInt(quantidade, 10) || 1);
   const valor = parseFloat(valor_total) || qtd * 63;
-  const status = ['pendente', 'admin'].includes(status_pagamento) ? status_pagamento : 'pago';
+  const status = ['pendente', 'admin', 'admin_pago'].includes(status_pagamento) ? status_pagamento : 'pago';
 
   try {
     // Inscrição manual (feita pelo admin) não conta pro limite de vagas do site
@@ -99,8 +99,8 @@ app.get('/api/inscricoes', async (req, res) => {
 app.patch('/api/inscricoes/:id/pagamento', async (req, res) => {
   const { id } = req.params;
   const { status } = req.body || {};
-  if (!['pendente', 'pago', 'admin'].includes(status)) {
-    return res.status(400).json({ error: 'status deve ser "pendente", "pago" ou "admin"' });
+  if (!['pendente', 'pago', 'admin', 'admin_pago'].includes(status)) {
+    return res.status(400).json({ error: 'status deve ser "pendente", "pago", "admin" ou "admin_pago"' });
   }
 
   try {
