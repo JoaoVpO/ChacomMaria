@@ -33,8 +33,18 @@ app.post('/api/inscricao', async (req, res) => {
 
   const qtd = Math.max(1, parseInt(quantidade, 10) || 1);
   const valor = parseFloat(valor_total) || qtd * 63;
+  const telefoneNormalizado = telefone.replace(/\D/g, '');
 
   try {
+    // Evita duplicar: se esse telefone já tem inscrição em aberto, reaproveita em vez de criar outra
+    const [[existente]] = await db.query(
+      "SELECT id FROM clientes WHERE REGEXP_REPLACE(telefone, '[^0-9]', '') = ? AND status_pagamento IN ('pendente', 'pago') LIMIT 1",
+      [telefoneNormalizado]
+    );
+    if (existente) {
+      return res.json({ id: existente.id });
+    }
+
     const [[{ total }]] = await db.query("SELECT COUNT(*) AS total FROM clientes WHERE status_pagamento IN ('pago', 'admin')");
     if (total >= LIMITE_VAGAS) {
       return res.status(409).json({ error: 'Vagas esgotadas', esgotado: true });
@@ -42,7 +52,7 @@ app.post('/api/inscricao', async (req, res) => {
 
     const [result] = await db.query(
       "INSERT INTO clientes (nome, email, cidade, telefone, quantidade, valor_total, origem) VALUES (?, ?, ?, ?, ?, ?, 'site')",
-      [nome, '', cidade, telefone, qtd, valor]
+      [nome, '', cidade, telefoneNormalizado, qtd, valor]
     );
     return res.json({ id: result.insertId });
   } catch (err) {

@@ -168,12 +168,15 @@
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (submitBtn.disabled) return;
+
       const data = Object.fromEntries(new FormData(form).entries());
       const quantidade = 1;
       const valorTotal = quantidade * PRECO_UNITARIO;
       data.quantidade = quantidade;
       data.valor_total = valorTotal;
 
+      submitBtn.disabled = true;
       message.textContent = 'Enviando...';
       message.className = 'form-message';
 
@@ -196,6 +199,7 @@
       } catch (err) {
         message.textContent = 'Não foi possível enviar sua inscrição. Tente novamente.';
         message.className = 'form-message error';
+        submitBtn.disabled = false;
       }
     });
   </script>
