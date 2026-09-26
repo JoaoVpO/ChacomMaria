@@ -430,6 +430,18 @@
       border-bottom: 1px solid #ccc;
       font-size: 12px;
     }
+    #printArea .print-section-row td {
+      padding-top: 18px;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: #000;
+      border-bottom: 1px solid #000;
+    }
+    #printArea .print-section-row:first-child td {
+      padding-top: 8px;
+    }
   }
 
   @media (min-width: 640px) {
@@ -472,7 +484,7 @@
         <p class="subtitle">Painel de inscrições e pagamentos</p>
       </div>
       <div class="header-actions">
-        <button class="print-btn" id="printBtn">🖨️ Imprimir pagos</button>
+        <button class="print-btn" id="printBtn">🖨️ Imprimir lista</button>
         <span class="live-pill"><span class="live-dot"></span>Atualiza a cada 10s</span>
       </div>
     </div>
@@ -541,7 +553,7 @@
   </div>
 
   <div id="printArea">
-    <h2>Chá com Maria — Inscritos pagos</h2>
+    <h2>Chá com Maria — Lista de presença</h2>
     <table>
       <thead>
         <tr><th>Nome</th><th>Número</th><th>Cidade</th></tr>
@@ -748,16 +760,26 @@
     });
 
     document.getElementById('printBtn').addEventListener('click', () => {
-      const rows = (window.ultimaListaInscricoes || [])
-        .filter(r => r.status_pagamento === 'pago')
-        .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR', { sensitivity: 'base' }));
+      const porNome = (a, b) => a.nome.localeCompare(b.nome, 'pt-BR', { sensitivity: 'base' });
+      const todas = (window.ultimaListaInscricoes || []).filter(r =>
+        ['pago', 'admin', 'admin_pago'].includes(r.status_pagamento)
+      );
+      const trabalhadores = todas.filter(r => ['admin', 'admin_pago'].includes(r.status_pagamento)).sort(porNome);
+      const inscricoes = todas.filter(r => r.status_pagamento === 'pago').sort(porNome);
+
+      const linhaHtml = (r) => `<tr><td>${r.nome}</td><td>${r.telefone}</td><td>${r.cidade}</td></tr>`;
       const printBody = document.getElementById('printTableBody');
-      if (!rows.length) {
+
+      if (!trabalhadores.length && !inscricoes.length) {
         printBody.innerHTML = '<tr><td colspan="3">Nenhum inscrito pago ainda.</td></tr>';
       } else {
-        printBody.innerHTML = rows.map(r => `
-          <tr><td>${r.nome}</td><td>${r.telefone}</td><td>${r.cidade}</td></tr>
-        `).join('');
+        printBody.innerHTML =
+          (trabalhadores.length
+            ? `<tr class="print-section-row"><td colspan="3">👷 Trabalhadores (Acolhida)</td></tr>${trabalhadores.map(linhaHtml).join('')}`
+            : '') +
+          (inscricoes.length
+            ? `<tr class="print-section-row"><td colspan="3">🎟️ Inscrições</td></tr>${inscricoes.map(linhaHtml).join('')}`
+            : '');
       }
       window.print();
     });
