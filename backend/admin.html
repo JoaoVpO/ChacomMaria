@@ -748,7 +748,9 @@
     });
 
     document.getElementById('printBtn').addEventListener('click', () => {
-      const rows = (window.ultimaListaInscricoes || []).filter(r => r.status_pagamento === 'pago');
+      const rows = (window.ultimaListaInscricoes || [])
+        .filter(r => r.status_pagamento === 'pago')
+        .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR', { sensitivity: 'base' }));
       const printBody = document.getElementById('printTableBody');
       if (!rows.length) {
         printBody.innerHTML = '<tr><td colspan="3">Nenhum inscrito pago ainda.</td></tr>';
