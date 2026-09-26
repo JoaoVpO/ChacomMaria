@@ -14,11 +14,17 @@ app.use(express.static(__dirname));
 app.get('/health', (req, res) => res.json({ ok: true }));
 
 const LIMITE_VAGAS = 150;
+const INSCRICOES_ENCERRADAS = true;
 
 app.get('/api/inscricoes/limite', async (req, res) => {
   try {
     const [[{ total }]] = await db.query("SELECT COUNT(*) AS total FROM clientes WHERE status_pagamento IN ('pago', 'admin', 'admin_pago')");
-    return res.json({ total, limite: LIMITE_VAGAS, esgotado: total >= LIMITE_VAGAS });
+    return res.json({
+      total,
+      limite: LIMITE_VAGAS,
+      esgotado: total >= LIMITE_VAGAS,
+      encerrado: INSCRICOES_ENCERRADAS,
+    });
   } catch (err) {
     console.error('Erro ao consultar limite de vagas', err);
     return res.status(500).json({ error: 'Falha ao consultar limite de vagas', detail: err.message });
@@ -26,6 +32,10 @@ app.get('/api/inscricoes/limite', async (req, res) => {
 });
 
 app.post('/api/inscricao', async (req, res) => {
+  if (INSCRICOES_ENCERRADAS) {
+    return res.status(409).json({ error: 'Inscrições encerradas', encerrado: true });
+  }
+
   const { nome, cidade, telefone, quantidade, valor_total } = req.body || {};
   if (!nome || !cidade || !telefone) {
     return res.status(400).json({ error: 'nome, cidade e telefone são obrigatórios' });

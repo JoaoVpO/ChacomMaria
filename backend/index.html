@@ -128,6 +128,13 @@
     </div>
   </div>
 
+  <div class="modal-overlay" id="modalEncerrado">
+    <div class="modal-card">
+      <p class="modal-eyebrow">Inscrições encerradas 🌸</p>
+      <p class="modal-line">As inscrições para o Chá com Maria foram encerradas. Agradecemos imensamente o carinho e o interesse de todos — esperamos você no próximo encontro!</p>
+    </div>
+  </div>
+
   <footer>
     <p>Desenvolvido por <a href="https://wa.me/5544998302783" target="_blank" rel="noopener" class="footer-link">JVP Tech</a></p>
   </footer>
@@ -143,6 +150,8 @@
     const message = document.getElementById('formMessage');
     const totalEl = document.getElementById('ticketTotal');
     const modalEsgotado = document.getElementById('modalEsgotado');
+    const modalEncerrado = document.getElementById('modalEncerrado');
+    const badgeTitle = document.querySelector('.badge-title');
     const submitBtn = form.querySelector('.btn-primary');
 
     function atualizarTotal() {
@@ -153,13 +162,22 @@
       modalEsgotado.classList.add('open');
       submitBtn.disabled = true;
       submitBtn.textContent = 'Vagas esgotadas';
+      if (badgeTitle) badgeTitle.textContent = 'Vagas esgotadas';
+    }
+
+    function mostrarEncerrado() {
+      modalEncerrado.classList.add('open');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Inscrições encerradas';
+      if (badgeTitle) badgeTitle.textContent = 'Inscrições encerradas';
     }
 
     async function checarLimite() {
       try {
         const resp = await fetch('/api/inscricoes/limite');
         const data = await resp.json();
-        if (data.esgotado) mostrarEsgotado();
+        if (data.encerrado) mostrarEncerrado();
+        else if (data.esgotado) mostrarEsgotado();
       } catch (e) {
         console.warn('Erro ao checar limite de vagas:', e);
       }
@@ -187,8 +205,10 @@
           body: JSON.stringify(data)
         });
         if (resp.status === 409) {
+          const erro = await resp.json();
           message.textContent = '';
-          mostrarEsgotado();
+          if (erro.encerrado) mostrarEncerrado();
+          else mostrarEsgotado();
           return;
         }
         if (!resp.ok) throw new Error((await resp.json()).error || 'Falha ao enviar');
